@@ -13,6 +13,9 @@ Follow instructions [here](https://developers.google.com/earth-engine/guides/pyt
 
 ### Example
 Download Sentinel-2 time series from January - December 2020
+
+Requirements
+* geojson file containing parcel geometry with label column e.g. 'CODE_GROUP'
 ```python
 import ee
 
