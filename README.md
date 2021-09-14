@@ -14,14 +14,17 @@ Follow instructions [here](https://developers.google.com/earth-engine/guides/pyt
 ### Example
 Download Sentinel-2 time series from January - December 2020
 ```python
-# import packages
 import ee
 
 # initialize 
 ee.Authenticate()
 ee.Initialize()
 
-# get data sample
+# get data
 prepare_dataset.py --
 
 ```
+
+### Acknowledgements
+* Multi-temporal despeckling from [WeiyingZhao](https://github.com/WeiyingZhao/Multitemporal-Sentinel-1-images-denoising-and-downloading-via-GEE)
+* Parcel data preprocessing from [VSainteuf](https://github.com/VSainteuf/pytorch-psetae/tree/master/preprocessing)
