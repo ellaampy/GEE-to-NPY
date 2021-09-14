@@ -11,7 +11,7 @@ from datetime import datetime
 ee.Initialize()
 
 
-def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, addNDVI=False, speckle_filter=False):
+def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, cc=80, orbit=154, addNDVI=False, speckle_filter=False):
 
     """
     Args:
@@ -24,8 +24,8 @@ def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, ad
 
     if 'S2' in col_id: 
         collection = ee.ImageCollection(col_id).filterDate(start_date,end_date).filterBounds(geometry).filter(
-                     ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE',80)).select(
-                     ['B2','B3','B4','B5', 'B6','B7','B8','B8A','B11','B12', 'QA60'])
+                     ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE',cc)).select(
+                     ['B2','B3','B4','B5', 'B6','B7','B8','B8A','B11','B12'])
 
         # set normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
@@ -40,17 +40,15 @@ def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, ad
                      start_date, end_date).filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV')).filter(
                      ee.Filter.listContains('transmitterReceiverPolarisation', 'VH')).filterBounds(geometry).select(['VV','VH']).filter(
                      ee.Filter.eq('orbitProperties_pass', 'DESCENDING')).sort('system:time_start', True).filter( 
-                     ee.Filter.eq('relativeOrbitNumber_start', 154))
+                     ee.Filter.eq('relativeOrbitNumber_start', orbit))
 
         # set normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
         if speckle_filter == True:
-            # collection = collection.map(lambda img: img.clip(geometry.bounds().buffer(200)))
             collection = multitemporalDespeckle(collection)
 
-        # sort by doa for ordered date sequence
-        #  projection used here for co-registration
+        #  co-register Sentinel-1 & Sentinel-2
         collection = collection.map(lambda img: img.reproject(crs = 'EPSG:32630', crsTransform = [10, 0, 399960, 0, -10, 5400000]))
 
 
@@ -164,21 +162,7 @@ def overlap_filter(collection, geometry):
     
     return collection
 
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Query GEE for reflectance data and return numpy array per feature')
-    parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")
-    parser.add_argument('--output_dir', type=str, help='output directory')
-    parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
-    parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
-    parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
-    parser.add_argument('--num_per_month', type=int, default=0, help='number of tiles per month')
-    parser.add_argument('--addNDVI', type=bool, default=False, help='computes and append ndvi as additional band')  
-    parser.add_argument('--speckle_filter', type=bool, default=False, help='computes and append ndvi as additional band')     
-    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json') 
-    return parser.parse_args()
-
-
+# min-max normalisation using 2 & 98 percentile
 def normalize(img):
     img = ee.Image(img)
     def norm_band(name):
@@ -218,3 +202,27 @@ def multitemporalDespeckle(images, radius = 70, units ='meters', opt_timeWindow=
 
     # denoise images
     return meanSpace.map(multitemporalDespeckleSingle).select(bandNames)
+
+
+
+def parse_args():
+    
+    # general
+    parser = argparse.ArgumentParser(description='Query GEE for time series data and return numpy array per parcel')
+    parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")
+    parser.add_argument('--output_dir', type=str, help='output directory')
+    parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
+    parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
+    parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
+    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file') 
+    parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month')
+    
+    # Sentinel-1
+    parser.add_argument('--orbit', type=int, default=False, help='define satellite orbit') 
+    parser.add_argument('--speckle_filter', type=bool, default=False, help='reduce speckle using multi-temporal despeckling')     
+   
+    # Sentinel-2
+    parser.add_argument('--cc', type=int, default=80, help='cloud cover threshold')  
+    parser.add_argument('--addNDVI', type=bool, default=False, help='computes and append ndvi as additional band')  
+    
+    return parser.parse_args()
