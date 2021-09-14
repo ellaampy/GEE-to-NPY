@@ -16,10 +16,12 @@ def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, cc
     """
     Args:
         geometry: feature to use as bounds
-        col_id: mission ID. Sentinel-2 surface reflectance = 'COPERNICUS/S2_SR', for Sentinel-1 = COPERNICUS/S1_GRD 
-        clip : clip all images in collection to geometry
+        col_id: mission ID. Sentinel-2 surface reflectance = 'COPERNICUS/S2_SR', for Sentinel-1 = COPERNICUS/S1_GRD
         num_per_month : number of images to return per month. for S2, sorted by cloud cover%
-        speckle_filter : applies a temporal filtering technique ()
+        speckle_filter : applies a temporal filtering technique 
+        addNDVI : computes and map NDVI to collection
+        orbit: define satellite for Sentinel-1 
+        cc: % cloud cover threshold
     """
 
     if 'S2' in col_id: 
