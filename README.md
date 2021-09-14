@@ -23,8 +23,8 @@ import ee
 ee.Authenticate()
 ee.Initialize()
 
-# get data
-prepare_dataset.py --
+# fetch data from GEE servers
+get_data.py --
 
 ```
 
