@@ -21,7 +21,7 @@ def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_d
     prepare_output(output_dir)
 
     # get parcel geometries & labels
-    polygons, lab_rpg = parse_rpg(rpg_file, label_names=label_names, id_field = ID_field)
+    polygons, lab_rpg = parse_rpg(rpg_file, label_names, id_field)
 
     # dict of global metadata to store parcel dates/labels
     dates = {k:[] for k in list(polygons.keys())}
