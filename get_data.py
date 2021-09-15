@@ -1,14 +1,13 @@
-def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, addNDVI =False, speckle_filter=False, label_names=['CODE_GROUP']):
+def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, addNDVI =False, speckle_filter=False, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
 
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
-
     start = datetime.now()
 
     # prepare output directory
     prepare_output(output_dir)
 
     # get parcel geometries & labels
-    polygons, lab_rpg = parse_rpg(rpg_file, label_names=label_names)
+    polygons, lab_rpg = parse_rpg(rpg_file, label_names=label_names, ID_field = ID_field)
 
     # dict of global metadata to store parcel dates/labels
     dates = {k:[] for k in list(polygons.keys())}
@@ -71,4 +70,4 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
     
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
-    prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month, addNDVI, speckle_filter, label_names)
+    prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month, addNDVI, speckle_filter, label_names, ID_field)
