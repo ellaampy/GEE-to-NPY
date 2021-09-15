@@ -8,6 +8,7 @@ from shapely.geometry import Polygon
 import time
 from datetime import datetime
 
+ee.Authenticate()
 ee.Initialize()
 
 
