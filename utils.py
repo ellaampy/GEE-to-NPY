@@ -117,7 +117,7 @@ def prepare_output(output_path):
     os.makedirs(os.path.join(output_path, 'QA'), exist_ok=True)
 
 
-def parse_rpg(rpg_file, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
+def parse_rpg(rpg_file, label_names=['CODE_GROUP'], id_field = 'ID_PARCEL'):
     """Reads rpg and returns a dict of pairs (ID_PARCEL : Polygon) and a dict of dict of labels
      {label_name1: {(ID_PARCEL : Label value)},
       label_name2: {(ID_PARCEL : Label value)}
@@ -135,9 +135,9 @@ def parse_rpg(rpg_file, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
     for f in tqdm(data['features']):
         # p = Polygon(f['geometry']['coordinates'][0][0])
         p = f["geometry"]["coordinates"][0]  
-        polygons[f['properties'][ID_field]] = p
+        polygons[f['properties'][id_field]] = p
         for l in label_names:
-            lab_rpg[l][f['properties'][ID_field]] = f['properties'][l]
+            lab_rpg[l][f['properties'][id_field]] = f['properties'][l]
     return polygons, lab_rpg
 
 
@@ -219,7 +219,7 @@ def parse_args():
                                             
     # parcels geometryies (json)
     parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")                                        
-    parser.add_argument('--ID_field', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
+    parser.add_argument('--id_field', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
     parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file')    
                                             
     # GEE params
