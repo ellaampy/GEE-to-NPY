@@ -20,8 +20,8 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         num_per_month : number of images to return per month. for S2, sorted by cloud cover%
         speckle_filter : applies a temporal filtering technique 
         addNDVI : computes and map NDVI to collection
-        orbit: define satellite for Sentinel-1 
-        cc: % cloud cover threshold
+        orbit: define orbit for Sentinel-1 collection
+        cloud_cover: % cloud cover threshold
         kernel_size: window size for despeckling. units = pixels
     """
 
@@ -30,7 +30,7 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
                      ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE',cloud_cover)).select(
                      ['B2','B3','B4','B5', 'B6','B7','B8','B8A','B11','B12'])
 
-        # set normalisation statistics (placed prior to any parcel clipping operation)
+        # get normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
         # compute NDVI
@@ -58,14 +58,14 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
                 collection = collection.map(lambda img: img.focal_mean(radius = kernel_size, kernelType = 'square', units='pixels')
                                             
             elif speckle_filter == 'median':
-                # focal mean
+                # focal median
                 collection = collection.map(lambda img: img.focal_median(radius = kernel_size, kernelType = 'square', units='pixels')                                           
 
         #  co-register Sentinel-1 & Sentinel-2
         collection = collection.map(lambda img: img.reproject(crs = 'EPSG:32630', crsTransform = [10, 0, 399960, 0, -10, 5400000]))
 
 
-    # checks for incomplete, duplicate footprints
+    # checks for partly-covered and duplicate footprints
     collection = overlap_filter(collection, geometry)
         
 
