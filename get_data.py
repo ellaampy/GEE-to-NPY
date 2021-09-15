@@ -1,5 +1,4 @@
-def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, addNDVI =False, speckle_filter=False, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
-
+def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, cloud_cover=80, addNDVI =False, orbit= 154, speckle_filter='mean', kernel_size=7, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
     start = datetime.now()
 
