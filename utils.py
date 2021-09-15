@@ -11,7 +11,7 @@ from datetime import datetime
 ee.Initialize()
 
 
-def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, cloud_cover=80, orbit=154, addNDVI=False, speckle_filter='mean', kernel_size=7):
+def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size):
 
     """
     Args:
@@ -22,6 +22,7 @@ def get_collection(geometry, col_id , start_date , end_date, num_per_month=0, cl
         addNDVI : computes and map NDVI to collection
         orbit: define satellite for Sentinel-1 
         cc: % cloud cover threshold
+        kernel_size: window size for despeckling. units = pixels
     """
 
     if 'S2' in col_id: 
