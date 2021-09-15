@@ -11,25 +11,16 @@ from datetime import datetime
 ee.Initialize()
 
 
-def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size):
-
-    """
-    Args:
-        geometry: feature to use as bounds
-        col_id: mission ID. Sentinel-2 surface reflectance = 'COPERNICUS/S2_SR', for Sentinel-1 = COPERNICUS/S1_GRD
-        num_per_month : number of images to return per month. for S2, sorted by cloud cover%
-        speckle_filter : applies a temporal filtering technique 
-        addNDVI : computes and map NDVI to collection
-        orbit: define orbit for Sentinel-1 collection
-        cloud_cover: % cloud cover threshold
-        kernel_size: window size for despeckling. units = pixels
-    """
+def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud_cover, addNDVI, granule_id, orbit, speckle_filter, kernel_size):
 
     if 'S2' in col_id: 
         collection = ee.ImageCollection(col_id).filterDate(start_date,end_date).filterBounds(geometry).filter(
                      ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE',cloud_cover)).select(
                      ['B2','B3','B4','B5', 'B6','B7','B8','B8A','B11','B12'])
-
+        
+        if granule_id is not None:
+            collection = collection.filter(ee.Filter.eq('MGRS_TILE', granule_id))
+            
         # get normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
@@ -42,9 +33,11 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         collection = ee.ImageCollection(col_id).filter(ee.Filter.eq('instrumentMode', 'IW')).filterDate(
                      start_date, end_date).filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV')).filter(
                      ee.Filter.listContains('transmitterReceiverPolarisation', 'VH')).filterBounds(geometry).select(['VV','VH']).filter(
-                     ee.Filter.eq('orbitProperties_pass', 'DESCENDING')).sort('system:time_start', True).filter( 
-                     ee.Filter.eq('relativeOrbitNumber_start', orbit))
-
+                     ee.Filter.eq('orbitProperties_pass', 'DESCENDING')).sort('system:time_start', True)
+        
+        if orbit is not None:
+            collection = collection.filter(ee.Filter.eq('relativeOrbitNumber_start', orbit))
+            
         # set normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
@@ -231,9 +224,11 @@ def parse_args():
     
     # Sentinel-1
     parser.add_argument('--orbit', type=int, default=False, help='define satellite orbit') 
-    parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling')     
+    parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling')    
+    parser.add_argument('--kernel_size', type=int, default =7, help='kernel/window size for despeckling')                                           
    
     # Sentinel-2
+    parser.add_argument('--granule_id', type=str, default=None, help='granule/tile identifier for Sentinel-2)                                            
     parser.add_argument('--cloud_cover', type=int, default=80, help='cloud cover threshold')  
     parser.add_argument('--addNDVI', type=bool, default=False, help='computes and append ndvi as additional band')  
     
