@@ -106,7 +106,7 @@ def prepare_output(output_path):
     os.makedirs(os.path.join(output_path, 'QA'), exist_ok=True)
 
 
-def parse_rpg(rpg_file, label_names=['CODE_GROUP']):
+def parse_rpg(rpg_file, label_names=['CODE_GROUP'], parcel_ids = 'ID_PARCEL'):
     """Reads rpg and returns a dict of pairs (ID_PARCEL : Polygon) and a dict of dict of labels
      {label_name1: {(ID_PARCEL : Label value)},
       label_name2: {(ID_PARCEL : Label value)}
@@ -124,9 +124,9 @@ def parse_rpg(rpg_file, label_names=['CODE_GROUP']):
     for f in tqdm(data['features']):
         # p = Polygon(f['geometry']['coordinates'][0][0])
         p = f["geometry"]["coordinates"][0]  
-        polygons[f['properties']['ID_PARCEL']] = p
+        polygons[f['properties'][parcel_ids]] = p
         for l in label_names:
-            lab_rpg[l][f['properties']['ID_PARCEL']] = f['properties'][l]
+            lab_rpg[l][f['properties'][parcel_ids]] = f['properties'][l]
     return polygons, lab_rpg
 
 
@@ -216,6 +216,7 @@ def parse_args():
     parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
     parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
     parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
+    parser.add_argument('--parcel_ids', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
     parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file') 
     parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month')
     
