@@ -116,7 +116,7 @@ def prepare_output(output_path):
     os.makedirs(os.path.join(output_path, 'QA'), exist_ok=True)
 
 
-def parse_rpg(rpg_file, label_names=['CODE_GROUP'], parcel_ids = 'ID_PARCEL'):
+def parse_rpg(rpg_file, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
     """Reads rpg and returns a dict of pairs (ID_PARCEL : Polygon) and a dict of dict of labels
      {label_name1: {(ID_PARCEL : Label value)},
       label_name2: {(ID_PARCEL : Label value)}
@@ -134,9 +134,9 @@ def parse_rpg(rpg_file, label_names=['CODE_GROUP'], parcel_ids = 'ID_PARCEL'):
     for f in tqdm(data['features']):
         # p = Polygon(f['geometry']['coordinates'][0][0])
         p = f["geometry"]["coordinates"][0]  
-        polygons[f['properties'][parcel_ids]] = p
+        polygons[f['properties'][ID_field]] = p
         for l in label_names:
-            lab_rpg[l][f['properties'][parcel_ids]] = f['properties'][l]
+            lab_rpg[l][f['properties'][ID_field]] = f['properties'][l]
     return polygons, lab_rpg
 
 
@@ -167,11 +167,7 @@ def overlap_filter(collection, geometry):
     
     # remove tiles containing masked pixels, select one of many overlapping tiles over a parcel
     collection = collection.filter(ee.Filter.eq('noData', False)).filter(ee.Filter.eq('overlap',True)).distinct('doa')
-    
-    # !- set in prepare dataset function
-    # collection = collection.map(lambda img: img.set(
-    #     'temporal', ee.Image(img).reduceRegion(reducer = ee.Reducer.toList(), geometry= geometry, scale=10).values()))
-    
+                                            
     return collection
 
 # min-max normalisation using 2 & 98 percentile
@@ -218,17 +214,19 @@ def multitemporalDespeckle(images, radius = kernel_size, units ='meters', opt_ti
 
 
 def parse_args():
-    
-    # general
     parser = argparse.ArgumentParser(description='Query GEE for time series data and return numpy array per parcel')
-    parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")
+                                            
+    # parcels geometryies (json)
+    parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")                                        
+    parser.add_argument('--ID_field', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
+    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file')    
+                                            
+    # GEE params
     parser.add_argument('--output_dir', type=str, help='output directory')
     parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
     parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
     parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
-    parser.add_argument('--parcel_ids', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
-    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file') 
-    parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month')
+    parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month. if 0 returns all')
     
     # Sentinel-1
     parser.add_argument('--orbit', type=int, default=False, help='define satellite orbit') 
