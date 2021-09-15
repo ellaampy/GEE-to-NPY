@@ -13,7 +13,7 @@ ee.Authenticate()
 ee.Initialize()
 
 
-def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, cloud_cover=80, addNDVI =False, orbit= 154, speckle_filter='mean', kernel_size=7, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
+def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size):
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
     start = datetime.now()
 
@@ -21,7 +21,7 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
     prepare_output(output_dir)
 
     # get parcel geometries & labels
-    polygons, lab_rpg = parse_rpg(rpg_file, label_names=label_names, ID_field = ID_field)
+    polygons, lab_rpg = parse_rpg(rpg_file, label_names=label_names, id_field = ID_field)
 
     # dict of global metadata to store parcel dates/labels
     dates = {k:[] for k in list(polygons.keys())}
@@ -86,6 +86,6 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
 if __name__ == '__main__':
     
     args = parse_args()
-    prepare_dataset(args.rpg_file, args.output_dir, args.col_id, args.start_date, args.end_date, args.num_per_month, args.cloud_cover, args.addNDVI, args.orbit, args.speckle_filter, args.kernel_size, args.label_names, args.ID_field)
+    prepare_dataset(args.rpg_file, args.label_names, args.id_field, args.output_dir, args.col_id, args.start_date, args.end_date, args.num_per_month, args.cloud_cover, args.addNDVI, args.orbit, args.speckle_filter, args.kernel_size)
 
 
