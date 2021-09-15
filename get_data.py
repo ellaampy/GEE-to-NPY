@@ -20,7 +20,7 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
         
         # get collection
         geometry = ee.Geometry.Polygon(geometry)
-        collection = get_collection(geometry, col_id, start_date, end_date, num_per_month, addNDVI,speckle_filter)
+        collection = get_collection(geometry, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size)
 
         # global normalize using 2nd & 98th percentile
         collection = collection.map(normalize)
@@ -69,4 +69,4 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
     
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
-    prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month, addNDVI, speckle_filter, label_names, ID_field)
+    prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size, label_names, ID_field)
