@@ -1,3 +1,18 @@
+import ee
+import os
+import numpy as np
+import geojson, json
+from tqdm import tqdm
+from shapely.geometry import Polygon
+import time
+from datetime import datetime
+from utils import *
+
+
+ee.Authenticate()
+ee.Initialize()
+
+
 def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month=0, cloud_cover=80, addNDVI =False, orbit= 154, speckle_filter='mean', kernel_size=7, label_names=['CODE_GROUP'], ID_field = 'ID_PARCEL'):
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
     start = datetime.now()
@@ -69,4 +84,8 @@ def prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_
     
 #--------------------------------------------------------------------------------
 if __name__ == '__main__':
-    prepare_dataset(rpg_file, output_dir, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, orbit, speckle_filter, kernel_size, label_names, ID_field)
+    
+    args = parse_args()
+    prepare_dataset(args.rpg_file, args.output_dir, args.col_id, args.start_date, args.end_date, args.num_per_month, args.cloud_cover, args.addNDVI, args.orbit, args.speckle_filter, args.kernel_size, args.label_names, args.ID_field)
+
+
