@@ -224,11 +224,11 @@ def parse_args():
     
     # Sentinel-1
     parser.add_argument('--orbit', type=int, default=False, help='define satellite orbit') 
-    parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling')    
+    parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling. options = [temporal, mean, median]')    
     parser.add_argument('--kernel_size', type=int, default =7, help='kernel/window size for despeckling')                                           
    
     # Sentinel-2
-    parser.add_argument('--granule_id', type=str, default=None, help='granule/tile identifier for Sentinel-2)                                            
+    parser.add_argument('--granule_id', type=str, default=None, help='granule/tile identifier for Sentinel-2')                                            
     parser.add_argument('--cloud_cover', type=int, default=80, help='cloud cover threshold')  
     parser.add_argument('--addNDVI', type=bool, default=False, help='computes and append ndvi as additional band')  
     
