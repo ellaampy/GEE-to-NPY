@@ -1,5 +1,10 @@
 # From GEE to NPY
-#### A GEE python-api script for downloading parcel-level Sentinel-1 and Sentinel-2 time series
+#### A GEE python-api script for downloading parcel-level Sentinel-1 / Sentinel-2 time series as NumPy
+Returns array of size ```T x C x N ```
+* T --> number of acquisitions
+* C --> number of channels/bands
+* N --> number of pixels within parcel
+
 
 ### Setup
 
@@ -16,16 +21,14 @@ Download Sentinel-2 time series from January - December 2020
 
 Requirements
 * geojson file containing parcel geometry with label column e.g. 'CODE_GROUP'
+
 ```python
-import ee
 
-# initialize 
-ee.Authenticate()
-ee.Initialize()
+# Sentinel-1 
+get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --ID_field 'ID_PARCEL' --output_dir C:/downloads --col_id 'COPERNICUS/S1_GRD' --start_date '2021-01-01' end_date '2021-01-31' --speckle_filter 'mean' --orbit 154
 
-# fetch data from GEE servers
-get_data.py --
-
+# Sentinel-2
+get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --ID_field 'ID_PARCEL' --output_dir C:/downloads --col_id 'COPERNICUS/S2_SR'  --start_date '2021-01-01' end_date '2021-01-31' 
 ```
 
 ### Acknowledgements
