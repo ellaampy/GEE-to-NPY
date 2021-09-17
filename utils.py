@@ -12,7 +12,7 @@ ee.Authenticate()
 ee.Initialize()
 
 
-def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud_cover, addNDVI, granule_id, orbit, speckle_filter, kernel_size):
+def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud_cover, addNDVI, granule_id, speckle_filter, kernel_size):
 
     if 'S2' in col_id: 
         collection = ee.ImageCollection(col_id).filterDate(start_date,end_date).filterBounds(geometry).filter(
@@ -20,7 +20,7 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
                      ['B2','B3','B4','B5', 'B6','B7','B8','B8A','B11','B12'])
         
         if granule_id is not None:
-            collection = collection.filter(ee.Filter.eq('MGRS_TILE', granule_id))
+            collection = collection.filter(ee.Filter.inList('MGRS_TILE', ee.List(granule_id)))
             
         # get normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
@@ -36,8 +36,8 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
                      ee.Filter.listContains('transmitterReceiverPolarisation', 'VH')).filterBounds(geometry).select(['VV','VH']).filter(
                      ee.Filter.eq('orbitProperties_pass', 'DESCENDING')).sort('system:time_start', True)
         
-        if orbit is not None:
-            collection = collection.filter(ee.Filter.eq('relativeOrbitNumber_start', orbit))
+        if granule_id is not None:
+            collection = collection.filter(ee.Filter.inList('relativeOrbitNumber_start', ee.List(granule_id)))            
             
         # set normalisation statistics (placed prior to any parcel clipping operation)
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
@@ -222,9 +222,9 @@ def parse_args():
     parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
     parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
     parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month. if 0 returns all')
-    
+    parser.add_argument('--granule_id', type=list, default=None, help='granule/orbit identifier for Sentinel-1 eg [154] or Sentinel-2 eg ["30UUU"]')  
+                                            
     # Sentinel-1
-    parser.add_argument('--orbit', type=int, default=False, help='define satellite orbit') 
     parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling. options = [temporal, mean, median]')    
     parser.add_argument('--kernel_size', type=int, default =7, help='kernel/window size for despeckling')                                           
    
