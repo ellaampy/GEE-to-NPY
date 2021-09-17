@@ -30,6 +30,10 @@ get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID
 get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID_PARCEL --output_dir C:/downloads --col_id COPERNICUS/S2_SR  --granule_id 30UVU --start_date 2021-01-01 end_date 2021-01-31 
 ```
 
+
+### Contributor(S)
+* [Dr. Charlotte Pelletier](https://sites.google.com/site/charpelletier)
+
 ### Acknowledgements
 * Multi-temporal despeckling from [WeiyingZhao](https://github.com/WeiyingZhao/Multitemporal-Sentinel-1-images-denoising-and-downloading-via-GEE)
 * Parcel data preprocessing from [VSainteuf](https://github.com/VSainteuf/pytorch-psetae/tree/master/preprocessing)
