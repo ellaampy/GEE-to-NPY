@@ -16,7 +16,7 @@ ee.Authenticate()
 ee.Initialize()
 
 
-def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, granule_id, orbit, speckle_filter, kernel_size):
+def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, granule_id, speckle_filter, kernel_size):
     np.warnings.filterwarnings('error', category=np.VisibleDeprecationWarning)
     start = datetime.now()
 
@@ -38,7 +38,7 @@ def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_d
         
         # get collection
         geometry = ee.Geometry.Polygon(geometry)
-        collection = get_collection(geometry, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, granule_id, orbit, speckle_filter, kernel_size)
+        collection = get_collection(geometry, col_id, start_date, end_date, num_per_month, cloud_cover, addNDVI, granule_id, speckle_filter, kernel_size)
 
         # global normalize using 2nd & 98th percentile
         collection = collection.map(normalize)
