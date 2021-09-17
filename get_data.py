@@ -9,7 +9,10 @@ from datetime import datetime
 from utils import *
 
 
+# Trigger the authentication flow
 ee.Authenticate()
+
+# Initialize library
 ee.Initialize()
 
 
