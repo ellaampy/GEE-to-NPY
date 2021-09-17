@@ -31,7 +31,7 @@ get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID
 ```
 
 
-### Contributor(S)
+### Contributor
 * [Dr. Charlotte Pelletier](https://sites.google.com/site/charpelletier)
 
 ### Acknowledgements
