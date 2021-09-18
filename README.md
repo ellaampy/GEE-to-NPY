@@ -26,7 +26,7 @@ Requirements
 Notes
 Footprint argument is optional. However to control which Sentinel-1/2 footprints are used, pre-run Example_findFootprint.ipynb
 ![sample S1/S2 footprints](img/sample_footprint.jpg)
-<img src="img/sample_footprint.jpg" width="48">
+<img src="img/sample_footprint.jpg" width="480">
 
 ```python
 
