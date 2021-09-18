@@ -89,6 +89,6 @@ def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_d
 if __name__ == '__main__':
     
     args = parse_args()
-    prepare_dataset(args.rpg_file, args.label_names, args.id_field, args.output_dir, args.col_id, args.start_date, args.end_date, args.num_per_month, args.cloud_cover, args.addNDVI, args.granule_id, args.orbit, args.speckle_filter, args.kernel_size)
+    prepare_dataset(args.rpg_file, args.label_names, args.id_field, args.output_dir, args.col_id, args.start_date, args.end_date, args.num_per_month, args.cloud_cover, args.addNDVI, args.footprint_id, args.speckle_filter, args.kernel_size)
 
 
