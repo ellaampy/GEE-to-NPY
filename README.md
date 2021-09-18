@@ -19,7 +19,8 @@ Follow instructions [here](https://developers.google.com/earth-engine/guides/pyt
 ### Example
 
 Requirements
-* geojson file containing parcel geometry with crop label column e.g. 'CODE_GROUP' and crop ID column e.g. 'ID_PARCEL'
+* packages : ee + geojson + tqdm + shapely + geopandas
+* input parcel: geojson file containing parcel geometry with crop label column e.g. 'CODE_GROUP' and crop ID column e.g. 'ID_PARCEL'
 
 ```python
 
