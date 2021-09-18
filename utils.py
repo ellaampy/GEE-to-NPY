@@ -26,7 +26,7 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
         # compute NDVI
-        if addNDVI == True:
+        if addNDVI:
             collection = collection.map(lambda img: img.addBands(img.normalizedDifference(['B8', 'B4']).rename('ndvi')))
 
 
