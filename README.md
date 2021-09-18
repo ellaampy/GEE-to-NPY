@@ -22,6 +22,11 @@ Requirements
 * packages : earthengine-api + shapely + geojson + tqdm  
 * input parcel : geojson file containing parcel geometry with crop label column e.g. 'CODE_GROUP' and crop ID column e.g. 'ID_PARCEL'
 
+
+Notes
+* footprint argument is optional. However to control which Sentinel-1/2 footprints are used, pre-run Example_findFootprint.ipynb
+![sample S1/S2 footprints](img/sample_footprint.jpg)
+
 ```python
 
 # Sentinel-1 
@@ -32,10 +37,11 @@ get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID
 ```
 
 
+
 ### Contributor
 * [Dr. Charlotte Pelletier](https://sites.google.com/site/charpelletier)
 
-### Acknowledgements
+### Credits
 * Multi-temporal despeckling from [WeiyingZhao](https://github.com/WeiyingZhao/Multitemporal-Sentinel-1-images-denoising-and-downloading-via-GEE)
 * Parcel data preprocessing from [VSainteuf](https://github.com/VSainteuf/pytorch-psetae/tree/master/preprocessing)
 * Sample parcels obtained from [IGN Registre parcellaire graphique (RPG)](https://www.data.gouv.fr/fr/datasets/registre-parcellaire-graphique-rpg-contours-des-parcelles-et-ilots-culturaux-et-leur-groupe-de-cultures-majoritaire/) 
