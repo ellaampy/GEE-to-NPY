@@ -15,17 +15,12 @@ pip install earthengine-api
 
 Follow instructions [here](https://developers.google.com/earth-engine/guides/python_install) to authenticate
 
-
 ### Example
 
 Requirements
 * packages : earthengine-api + shapely + geojson + tqdm  
 * input parcel : geojson file containing parcel geometry with crop label column e.g. 'CODE_GROUP' and crop ID column e.g. 'ID_PARCEL'
 
-
-Notes
-Footprint argument is optional. However to control which Sentinel-1/2 footprints are used, pre-run Example_findFootprint.ipynb
-<img src="img/sample_footprint.jpg" alt="sample S1/S2 footprints" width="500">
 
 ```python
 
@@ -36,6 +31,9 @@ get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID
 get_data.py --rpg_file farms.geojson, --label_names ['CODE_GROUP'] --id_field ID_PARCEL --output_dir C:/downloads/s2_data --col_id COPERNICUS/S2_SR  --footprint_id ["30UVU"] --start_date 2021-01-01 end_date 2021-01-31 
 ```
 
+### Notes
+Footprint argument is optional. However to control which Sentinel-1/2 footprints are used, pre-run *Example_findFootprint.ipynb*
+<img src="img/sample_footprint.jpg" alt="sample S1/S2 footprints" width="500">
 
 
 ### Contributor
