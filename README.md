@@ -15,6 +15,17 @@ pip install earthengine-api
 
 Follow instructions [here](https://developers.google.com/earth-engine/guides/python_install) to authenticate
 
+### General processing workflow
+* filter collection by aoi, date, cloud-cover (for Sentinel-2), bands (10 S2 bands @10-20m, 2 S1 bands VV-VH)
+* alternatively filter by footprint ID (eg granule ID for S2 or orbit number for S1)
+* optionally pre-compute NDVI and add to bands
+* apply speckle filter (S1 only). Options --> ['mean', 'median', 'temporal']
+* co-register (align S1 with S2 pixels)
+* normalize (min-max @ 2nd and 98th percentile)
+* overlap analysis --> discard no data, repeating observations from overlapping scenes, incomplete image coverage
+* save time series array as .npy per parcel
+* save dates of acquisition + parcel label in separate files
+
 ### Example
 
 Requirements
