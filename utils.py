@@ -43,17 +43,17 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
         if speckle_filter:
+            # multi-temporal speckle reduction
             if speckle_filter == 'temporal':
-                # multi-temporal speckle reduction
                 collection = multitemporalDespeckle(collection)
-                
+            
+            # focal mean
             elif speckle_filter == 'mean':
-                # focal mean
-                collection = collection.map(lambda img: img.focal_mean(radius = kernel_size, kernelType = 'square', units='pixels')
-                                            
+                collection = collection.map(lambda img: img.focal_mean(radius = kernel_size, kernelType = 'square', units='pixels'))
+            
+             # focal median                                            
             elif speckle_filter == 'median':
-                # focal median
-                collection = collection.map(lambda img: img.focal_median(radius = kernel_size, kernelType = 'square', units='pixels')                                           
+                collection = collection.map(lambda img: img.focal_median(radius = kernel_size, kernelType = 'square', units='pixels'))                                           
 
         #  co-register Sentinel-1 & Sentinel-2
         collection = collection.map(lambda img: img.reproject(crs = 'EPSG:32630', crsTransform = [10, 0, 399960, 0, -10, 5400000]))
@@ -181,7 +181,7 @@ def normalize(img):
 
 
 
-def multitemporalDespeckle(images, radius = kernel_size, units ='meters', opt_timeWindow={'before': -2, 'after': 2, 'units': 'month'}):
+def multitemporalDespeckle(images, kernel_size, units ='pixels', opt_timeWindow={'before': -2, 'after': 2, 'units': 'month'}):
 
     bandNames = ee.Image(images.first()).bandNames()
     bandNamesMean = bandNames.map(lambda b: ee.String(b).cat('_mean'))
@@ -189,7 +189,7 @@ def multitemporalDespeckle(images, radius = kernel_size, units ='meters', opt_ti
 
     # compute space-average for all images
     def space_avg(image):
-        mean = image.reduceNeighborhood(ee.Reducer.mean(), ee.Kernel.square(radius, units)).rename(bandNamesMean)
+        mean = image.reduceNeighborhood(ee.Reducer.mean(), ee.Kernel.square(kernel_size, units)).rename(bandNamesMean)
         ratio = image.divide(mean).rename(bandNamesRatio)
         return image.addBands(mean).addBands(ratio)
 
@@ -226,7 +226,7 @@ def parse_args():
                                             
     # Sentinel-1
     parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling. options = [temporal, mean, median]')    
-    parser.add_argument('--kernel_size', type=int, default =7, help='kernel/window size for despeckling')                                           
+    parser.add_argument('--kernel_size', type=int, default =7, help='kernel/window size in pixels for despeckling')                                           
    
     # Sentinel-2                                          
     parser.add_argument('--cloud_cover', type=int, default=80, help='cloud cover threshold')  
