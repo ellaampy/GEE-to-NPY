@@ -21,13 +21,13 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         
         if footprint_id is not None:
             collection = collection.filter(ee.Filter.inList('MGRS_TILE', ee.List(footprint_id)))
-            
-        # get normalisation statistics (placed prior to any parcel clipping operation)
-        collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
         # compute NDVI
         if addNDVI:
             collection = collection.map(lambda img: img.addBands(img.normalizedDifference(['B8', 'B4']).rename('ndvi')))
+            
+        # get normalisation statistics (placed prior to any parcel clipping operation)
+        collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
 
 
     elif 'S1'  in col_id:
@@ -108,7 +108,6 @@ def prepare_output(output_path):
     os.makedirs(output_path, exist_ok=True)
     os.makedirs(os.path.join(output_path, 'DATA'), exist_ok=True)
     os.makedirs(os.path.join(output_path, 'META'), exist_ok=True)
-    os.makedirs(os.path.join(output_path, 'QA'), exist_ok=True)
 
 
 def parse_rpg(rpg_file, label_names=['CODE_GROUP'], id_field = 'ID_PARCEL'):
