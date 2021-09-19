@@ -26,10 +26,7 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         if addNDVI:
             collection = collection.map(lambda img: img.addBands(img.normalizedDifference(['B8', 'B4']).rename('ndvi')))
             
-        # get normalisation statistics (placed prior to any parcel clipping operation)
-        collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
-
-
+            
     elif 'S1'  in col_id:
         collection = ee.ImageCollection(col_id).filter(ee.Filter.eq('instrumentMode', 'IW')).filterDate(
                      start_date, end_date).filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV')).filter(
@@ -39,13 +36,10 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         if footprint_id is not None:
             collection = collection.filter(ee.Filter.inList('relativeOrbitNumber_start', ee.List(footprint_id)))            
             
-        # set normalisation statistics (placed prior to any parcel clipping operation)
-        collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
-
         if speckle_filter:
             # multi-temporal speckle reduction
             if speckle_filter == 'temporal':
-                collection = multitemporalDespeckle(collection)
+                collection = multitemporalDespeckle(collection, kernel_size, units ='pixels', opt_timeWindow={'before': -2, 'after': 2, 'units': 'month'})
             
             # focal mean
             elif speckle_filter == 'mean':
@@ -59,9 +53,11 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         collection = collection.map(lambda img: img.reproject(crs = 'EPSG:32630', crsTransform = [10, 0, 399960, 0, -10, 5400000]))
 
 
-    # checks for partly-covered and duplicate footprints
+    # get normalisation statistics (placed prior to any parcel clipping operation)
+    collection = collection.map(lambda img: img.set('stats', ee.Image(img).reduceRegion(reducer=ee.Reducer.percentile([2, 98]), bestEffort=True)))
+
+    # checks for partly-covered and duplicate footprints and clip collection to geometry
     collection = overlap_filter(collection, geometry)
-        
 
     # return one image per month
     if  num_per_month > 0:
