@@ -8,7 +8,7 @@ from shapely.geometry import Polygon
 import time
 from datetime import datetime
 
-ee.Authenticate()
+# ee.Authenticate()
 ee.Initialize()
 
 
@@ -36,18 +36,17 @@ def get_collection(geometry, col_id, start_date , end_date, num_per_month, cloud
         if footprint_id is not None:
             collection = collection.filter(ee.Filter.inList('relativeOrbitNumber_start', ee.List(footprint_id)))            
             
-        if speckle_filter:
-            # multi-temporal speckle reduction
-            if speckle_filter == 'temporal':
-                collection = multitemporalDespeckle(collection, kernel_size, units ='pixels', opt_timeWindow={'before': -2, 'after': 2, 'units': 'month'})
-            
-            # focal mean
-            elif speckle_filter == 'mean':
-                collection = collection.map(lambda img: img.focal_mean(radius = kernel_size, kernelType = 'square', units='pixels'))
-            
-             # focal median                                            
-            elif speckle_filter == 'median':
-                collection = collection.map(lambda img: img.focal_median(radius = kernel_size, kernelType = 'square', units='pixels'))                                           
+        # multi-temporal speckle reduction
+        if speckle_filter == 'temporal':
+            collection = multitemporalDespeckle(collection, kernel_size, units ='pixels', opt_timeWindow={'before': -2, 'after': 2, 'units': 'month'})
+
+        # focal mean
+        elif speckle_filter == 'mean':
+            collection = collection.map(lambda img: img.focal_mean(radius = kernel_size, kernelType = 'square', units='pixels').copyProperties(img, ["system:time_start"]))
+
+         # focal median                                            
+        elif speckle_filter == 'median':
+            collection = collection.map(lambda img: img.focal_median(radius = kernel_size, kernelType = 'square', units='pixels').copyProperties(img, ["system:time_start"]))                                           
 
         #  co-register Sentinel-1 & Sentinel-2
         collection = collection.map(lambda img: img.reproject(crs = 'EPSG:32630', crsTransform = [10, 0, 399960, 0, -10, 5400000]))
