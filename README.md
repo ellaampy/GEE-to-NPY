@@ -45,6 +45,7 @@ get_data.py --rpg_file sample_farm.geojson, --label_names ['CODE_GROUP'] --id_fi
 ### Notes
 Footprint argument is set to None by default. However to avoid using partly covered scenes when one can have full Sentinel-1/2 scenes, 
 pre-run *Example_findFootprint.ipynb*
+
 <img src="img/sample_footprint.jpg" alt="sample S1/S2 footprints" width="500">
 
 
