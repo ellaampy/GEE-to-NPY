@@ -213,7 +213,7 @@ def parse_args():
                                             
     # parcels geometryies (json)
     parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")                                        
-    parser.add_argument('--id_field', type=list, default=['ID_PARCEL'], help='parcel id column name in json file')
+    parser.add_argument('--id_field', type=str, default='ID_PARCEL', help='parcel id column name in json file')
     parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file')    
                                             
     # GEE params
