@@ -1,7 +1,7 @@
 import ee
 import os
 import numpy as np
-import geojson, json
+import json
 from tqdm import tqdm
 from shapely.geometry import Polygon
 import time
