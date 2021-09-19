@@ -43,7 +43,7 @@ def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_d
         # global normalize using 2nd & 98th percentile
         collection = collection.map(normalize)
 
-        # check for incomplete and overlapping footprints
+        # get time series array
         collection = collection.map(lambda img: img.set('temporal', ee.Image(img).reduceRegion(reducer = ee.Reducer.toList(), geometry= geometry, scale=10).values()))
 
         # iterate collection and return array of TxCxN. length of time series X number of channels X number of pixels in parcel
