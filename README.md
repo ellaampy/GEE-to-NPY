@@ -50,6 +50,7 @@ pre-run *Example_findFootprint.ipynb*
 
 
 ### Contributor
+* Stella Ofori-Ampofo
 * [Dr. Charlotte Pelletier](https://sites.google.com/site/charpelletier)
 
 ### Credits
