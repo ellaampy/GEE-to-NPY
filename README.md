@@ -29,7 +29,7 @@ Follow instructions [here](https://developers.google.com/earth-engine/guides/pyt
 ### Example
 
 Requirements
-* packages : earthengine-api + shapely + tqdm  
+* packages : earthengine-api + tqdm  
 * input parcel : geojson file containing parcel geometry with crop label column e.g. 'CODE_GROUP' and crop ID column e.g. 'ID_PARCEL'
 
 
