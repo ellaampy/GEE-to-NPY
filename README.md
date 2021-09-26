@@ -36,7 +36,7 @@ Requirements
 ```python
 
 # Sentinel-1 
-get_data.py --rpg_file sample_farm.geojson --label_names ['CODE_GROUP'] --id_field ID_PARCEL --output_dir C:/downloads/s1_data --col_id COPERNICUS/S1_GRD --start_date 2021-01-01 --end_date 2021-01-31 --speckle_filter mean --footprint_id [154]
+get_data.py --rpg_file sample_farm.geojson --label_names ['CODE_GROUP'] --id_field ID_PARCEL --output_dir C:/downloads/s1_data --col_id COPERNICUS/S1_GRD --footprint_id [154] --start_date 2021-01-01 --end_date 2021-01-31 --speckle_filter mean 
 
 # Sentinel-2
 get_data.py --rpg_file sample_farm.geojson --label_names ['CODE_GROUP'] --id_field ID_PARCEL --output_dir C:/downloads/s2_data --col_id COPERNICUS/S2_SR  --footprint_id ["30UVU"] --start_date 2021-01-01 --end_date 2021-01-31 
