@@ -3,14 +3,12 @@ import os
 import numpy as np
 import json
 from tqdm import tqdm
-from shapely.geometry import Polygon
-import time
 from datetime import datetime
 from utils import *
 
 
 # Trigger the authentication flow
-ee.Authenticate()
+# ee.Authenticate()
 
 # Initialize library
 ee.Initialize()
