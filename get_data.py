@@ -79,7 +79,7 @@ def prepare_dataset(rpg_file, label_names, id_field, output_dir, col_id, start_d
 
     # get processing time
     end = datetime.now()
-    print('total ignored pixels', ignored)
+    print('total ignored parcels', ignored)
     print(f"\n processing time -> {end - start}")
 
     
