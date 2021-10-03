@@ -209,24 +209,24 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Query GEE for time series data and return numpy array per parcel')
                                             
     # parcels geometryies (json)
-    parser.add_argument('--rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")                                        
-    parser.add_argument('--id_field', type=str, default='ID_PARCEL', help='parcel id column name in json file')
-    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], help='label column name in json file')    
+    parser.add_argument('rpg_file', type=str, help="path to json with attributes ID_PARCEL, CODE_GROUP")                                        
+    parser.add_argument('--id_field', type=str, default='ID_PARCEL', nargs="?", help='parcel id column name in json file')
+    parser.add_argument('--label_names', type=list, default=['CODE_GROUP'], nargs="?", help='label column name in json file')    
                                             
     # GEE params
-    parser.add_argument('--output_dir', type=str, help='output directory')
-    parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
-    parser.add_argument('--start_date', type=str,  default='2018-10-01', help='start date YYYY-MM-DD')
-    parser.add_argument('--end_date', type=str,  default='2019-12-31', help='end date YYYY-MM-DD')
-    parser.add_argument('--num_per_month', type=int, default=0, help='number of scenes per month. if 0 returns all')
-    parser.add_argument('--footprint_id', type=list, default=None, help='granule/orbit identifier for Sentinel-1 eg [153, 154] or Sentinel-2 eg ["30UUU"]')  
+    parser.add_argument('output_dir', type=str, help='output directory')
+    parser.add_argument('--col_id', type=str, default="COPERNICUS/S2_SR", nargs="?", help="GEE collection ID e.g. 'COPERNICUS/S2_SR' or 'COPERNICUS/S1_GRD'")
+    parser.add_argument('--start_date', type=str,  default='2018-10-01', nargs="?", help='start date YYYY-MM-DD')
+    parser.add_argument('--end_date', type=str,  default='2019-12-31', nargs="?", help='end date YYYY-MM-DD')
+    parser.add_argument('--num_per_month', type=int, default=0, nargs="?", help='number of scenes per month. if 0 returns all')
+    parser.add_argument('--footprint_id', type=list, default=None, nargs="?", help='granule/orbit identifier for Sentinel-1 eg [153, 154] or Sentinel-2 eg ["30UUU"]')  
                                             
     # Sentinel-1
-    parser.add_argument('--speckle_filter', type=str, default='temporal', help='reduce speckle using multi-temporal despeckling. options = [temporal, mean, median]')    
-    parser.add_argument('--kernel_size', type=int, default =5, help='kernel/window size in pixels for despeckling')                                           
+    parser.add_argument('--speckle_filter', type=str, default='temporal', nargs="?", help='reduce speckle using multi-temporal despeckling. options = [temporal, mean, median]')    
+    parser.add_argument('--kernel_size', type=int, default =5, nargs="?", help='kernel/window size in pixels for despeckling')                                           
    
     # Sentinel-2                                          
-    parser.add_argument('--cloud_cover', type=int, default=80, help='cloud cover threshold')  
-    parser.add_argument('--addNDVI', type=bool, default=False, help='computes and append ndvi as additional band')  
+    parser.add_argument('--cloud_cover', type=int, default=80, nargs="?", help='cloud cover threshold')  
+    parser.add_argument('--addNDVI', type=bool, default=False, nargs="?", help='computes and append ndvi as additional band')  
     
     return parser.parse_args()
